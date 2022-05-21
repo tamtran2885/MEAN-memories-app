@@ -1,11 +1,36 @@
 <mat-toolbar class="mat-toolbar" color="primary">
   <span>
-    <a routerLink="">MEAN-STACK-APP</a>
+    <a routerLink="">MY NOTES</a>
   </span>
   <span class="space"></span>
   <ul>
-    <li>
-      <a mat-raised-button routerLink="/create" routerLinkActive="mat-accent">Add Post</a>
+    <li *ngIf="userIsAuthenticated">
+      <a
+        mat-raised-button
+        routerLink="/create"
+        routerLinkActive="mat-accent"
+      >Add Post</a>
+    </li>
+    <li *ngIf="!userIsAuthenticated">
+      <a
+        mat-raised-button
+        routerLink="/signin"
+        routerLinkActive="mat-accent"
+      >Sign In</a>
+    </li>
+    <li *ngIf="!userIsAuthenticated">
+      <a
+        mat-raised-button
+        routerLink="/signup"
+        routerLinkActive="mat-accent"
+      >Sign Up</a>
+    </li>
+    <li *ngIf="userIsAuthenticated">
+      <button
+        mat-raised-button
+        color="secondary"
+        (click)="onLogout()"
+      >Log Out</button>
     </li>
   </ul>
 </mat-toolbar>
