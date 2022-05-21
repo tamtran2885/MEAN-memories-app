@@ -2,7 +2,11 @@
   <mat-expansion-panel *ngFor="let item of posts">
     <mat-expansion-panel-header>
       {{ item.title }}
+      <!-- {{ item.id }} -->
     </mat-expansion-panel-header>
+    <div class="post-image">
+      <img [src]="item.imagePath" [alt]="item.title">
+    </div>
     <p>{{ item.content }}</p>
     <mat-action-row>
       <a mat-raised-button color="primary" [routerLink]="['/edit', item.id]">Edit</a>
@@ -10,4 +14,13 @@
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>
+
+<!-- PAGINATION -->
+<mat-paginator
+  [length]="totalPosts"
+  [pageSize]="postsPerPage"
+  [pageSizeOptions]="pageSizeOptions"
+  (page)="onChangedPage($event)"
+  *ngIf="posts.length > 0"
+></mat-paginator>
 <p class="info-text mat-body-1" *ngIf="posts.length === 0">No posts added yet</p>

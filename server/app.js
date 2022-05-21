@@ -1,10 +1,13 @@
+import path from "path";
 import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
 import postRoutes from "./routes/post.routes.js";
 
 const app = express();
+dotenv.config();
 
 mongoose.connect(process.env.CONNECTION_URL)
   .then(() => {
@@ -16,6 +19,9 @@ mongoose.connect(process.env.CONNECTION_URL)
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// To access images folder
+app.use("/images", express.static(path.join("server/images")));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
