@@ -1,0 +1,7 @@
+{
+  "env": {
+    "MONGO_ATLAS_PW": "mongoose_db_password",
+    "JWT_KEY": "secret_key",
+    "PORT": "port"
+  }
+}

@@ -10,7 +10,7 @@ import userRoutes from "./routes/user.routes.js";
 const app = express();
 dotenv.config();
 
-mongoose.connect(process.env.CONNECTION_URL)
+mongoose.connect("mongodb+srv://tamtran:" + process.env.MONGO_ATLAS_PW + "@cluster0.biq1t93.mongodb.net/?retryWrites=true&w=majority")
   .then(() => {
     console.log("Connect to database");
   })
