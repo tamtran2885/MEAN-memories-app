@@ -1,6 +1,6 @@
 import Post from "../models/post.js";
 
-export const createPost = (req, res, next) => {
+export const createPost = async (req, res, next) => {
   const url = req.protocol + "://" + req.get("host");
   const post = new Post({
     title: req.body.title,
@@ -8,36 +8,37 @@ export const createPost = (req, res, next) => {
     imagePath: url + "/images/" + req.file.filename,
     creator: req.userData.userId
   });
-  // console.log(req.userData);
-  // return res.status(200).json({});
-  post.save().then(createdPost => {
+
+  try {
+    await post.save();
     res.status(201).json({
       message: "Post added successfully",
       post: {
-        ...createdPost,
-        id: createdPost._id,
+        ...post,
+        id: post._id,
       }
     });
-  })
-  .catch(err => {
+  } catch (err) {
     res.status(500).json({
+      error: err.message,
       message: "New post NOT created"
     })
-  })
+  }
 }
 
-export const getSinglePost = (req, res, next) => {
-  // if( !mongoose.Types.ObjectId.isValid(id) ) return false;
-  Post.findById(req.params.id).then(post => {
-    if (post) {
-      res.status(200).json(post);
-    } else {
-      res.status(404).json({ message: "Post not found!" });
-    }
-  });
+export const getSinglePost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    res.status(200).json(post);
+  } catch (err) {
+    res.status(404).json({
+      error: err.message,
+      message: "Page not found"
+    });
+  }
 }
 
-export const updatePost = (req, res, next) => {
+export const updatePost = async (req, res) => {
   let imagePath = req.body.imagePath;
   if (req.file) {
     const url = req.protocol + "://" + req.get("host");
@@ -50,35 +51,36 @@ export const updatePost = (req, res, next) => {
     imagePath: imagePath,
     creator: req.userData.userId
   });
-  // console.log(post);
-  Post.updateOne({
-    _id: req.params.id,
-    creator: req.userData.userId
-  }, post)
-    .then(result => {
-      // console.log(result);
-        if (result.modifiedCount > 0) {
-          res.status(200).json({
-            message: "Post updated",
-          })
-        } else {
-          res.status(401).json({
-            message: "Post NOT AUTHORIZED to be updated",
-          })
-        }
-    })
-    .catch((err) => {
-      res.status(500).json({ message: "Post NOT updated"})
-    })
+
+  try {
+    const result = await Post.updateOne({
+      _id: req.params.id,
+      creator: req.userData.userId
+    }, post);
+    // console.log(result);
+    if (result.modifiedCount > 0) {
+      res.status(200).json({
+        message: "Post updated",
+      })
+    } else {
+      res.status(401).json({
+        message: "Post NOT AUTHORIZED to be updated",
+      })
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Post NOT updated"})
+  }
 }
 
-export const deletePost = (req, res, next) => {
+export const deletePost = async (req, res) => {
   // console.log(req.params.id);
-  Post.deleteOne({
-    _id: req.params.id,
-    creator: req.userData.userId
-  }).then(result => {
-    // console.log(result);
+
+  try {
+    const result = await Post.deleteOne({
+      _id: req.params.id,
+      creator: req.userData.userId
+    })
+
     if (result.deletedCount > 0) {
       res.status(200).json({
         message: "Post deleted"
@@ -88,15 +90,14 @@ export const deletePost = (req, res, next) => {
         message: "Post NOT AUTHORIZED to be deleted",
       })
     }
-  })
-  .catch((err) => {
+  } catch (err) {
     res.status(500).json({
       message: "Post CAN NOT BE deleted"
     })
-  })
+  }
 }
 
-export const getAllPosts = (req, res, next) => {
+export const getAllPosts = (req, res) => {
   // console.log(req.query)
   // Query extracted from url is string, needed to be numeric
   const pageSize = +req.query.pagesize;
