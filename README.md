@@ -41,7 +41,9 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 This app is deployed using Two Separated Apps Approach. While the REST API is deployed though AWS EB service, the Angular app is deployed through AWS S3 service.
 
+![alt text](https://github.com/tamtran2885/MEAN-memories-app/blob/main/aws-1.PNG)
 
+![alt text](https://github.com/tamtran2885/MEAN-memories-app/blob/main/aws-2.PNG)
 
 
 
